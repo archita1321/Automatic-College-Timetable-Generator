@@ -1,0 +1,628 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.SubstituteTeacher
+
+@{
+    ViewData["Title"] = "Assign Substitute Teacher";
+
+    string leaveTeacher = ViewBag.LeaveTeacher as string ?? "";
+    string leaveDay = ViewBag.LeaveDay as string ?? "";
+}
+
+<div class="container mt-4">
+
+    <a asp-controller="TeacherLeave"
+       asp-action="Index"
+       class="btn btn-outline-primary mb-3">
+
+        ← Back to Teacher Leave
+
+    </a>
+
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🔄 Substitute Teacher Allocation
+        </h2>
+
+        <p class="text-muted">
+            Assign a substitute for the absent teacher
+        </p>
+
+    </div>
+
+
+    <div class="card shadow rounded-4">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- ========================================= -->
+                <!-- ABSENT TEACHER -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Absent Teacher
+                    </label>
+
+                    <select id="AbsentTeacher"
+                            name="AbsentTeacher"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Absent Teacher --
+                        </option>
+
+                        @foreach (var teacher in ViewBag.Teachers)
+                        {
+                            if (!string.IsNullOrWhiteSpace(leaveTeacher) &&
+                                teacher.TeacherName != null &&
+                                teacher.TeacherName.Trim()
+                                    .Equals(
+                                        leaveTeacher.Trim(),
+                                        StringComparison.OrdinalIgnoreCase))
+                            {
+                                <option value="@teacher.TeacherName"
+                                        selected>
+                                    @teacher.TeacherName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@teacher.TeacherName">
+                                    @teacher.TeacherName
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- DAY -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Day
+                    </label>
+
+                    <select id="Day"
+                            name="Day"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Day --
+                        </option>
+
+                        @foreach (var dayName in new[]
+                        {
+                            "Monday",
+                            "Tuesday",
+                            "Wednesday",
+                            "Thursday",
+                            "Friday",
+                            "Saturday"
+                        })
+                        {
+                            if (!string.IsNullOrWhiteSpace(leaveDay) &&
+                                leaveDay.Equals(
+                                    dayName,
+                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                <option value="@dayName"
+                                        selected>
+                                    @dayName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@dayName">
+                                    @dayName
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- LECTURE / TIME -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Lecture / Time
+                    </label>
+
+                    <select id="TimeSlot"
+                            name="TimeSlot"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Loading Lectures --
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- SUBJECT -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Subject
+                    </label>
+
+                    <select id="Subject"
+                            name="Subject"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Lecture First --
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- CLASS -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Class
+                    </label>
+
+                    <select id="ClassName"
+                            name="ClassName"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Lecture First --
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- AVAILABLE SUBSTITUTE -->
+                <!-- ========================================= -->
+
+                <div class="mb-3">
+
+                    <label class="fw-bold">
+                        Available Substitute Teacher
+                    </label>
+
+                    <select id="SubstituteTeacherName"
+                            name="SubstituteTeacherName"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Lecture First --
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <input type="hidden"
+                       name="Status"
+                       value="Assigned" />
+
+
+                <!-- ========================================= -->
+                <!-- BUTTON -->
+                <!-- ========================================= -->
+
+                <button type="submit"
+                        class="btn btn-success rounded-pill px-4">
+
+                    🔄 Assign Substitute
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
+
+    const absentTeacher =
+        document.getElementById("AbsentTeacher");
+
+    const day =
+        document.getElementById("Day");
+
+    const timeSlot =
+        document.getElementById("TimeSlot");
+
+    const subject =
+        document.getElementById("Subject");
+
+    const className =
+        document.getElementById("ClassName");
+
+    const substituteTeacher =
+        document.getElementById("SubstituteTeacherName");
+
+
+    // =====================================================
+    // TEACHER OR DAY CHANGED
+    // =====================================================
+
+    absentTeacher.addEventListener(
+        "change",
+        loadLectures
+    );
+
+    day.addEventListener(
+        "change",
+        loadLectures
+    );
+
+
+    // =====================================================
+    // LOAD ABSENT TEACHER LECTURES
+    // =====================================================
+
+    function loadLectures() {
+
+        const teacher =
+            absentTeacher.value.trim();
+
+        const selectedDay =
+            day.value.trim();
+
+
+        // RESET
+
+        timeSlot.innerHTML =
+            '<option value="">-- Select Lecture --</option>';
+
+        subject.innerHTML =
+            '<option value="">-- Select Lecture First --</option>';
+
+        className.innerHTML =
+            '<option value="">-- Select Lecture First --</option>';
+
+        substituteTeacher.innerHTML =
+            '<option value="">-- Select Lecture First --</option>';
+
+
+        if (!teacher || !selectedDay) {
+            return;
+        }
+
+
+        timeSlot.innerHTML =
+            '<option value="">-- Loading Lectures --</option>';
+
+
+        const url =
+            '@Url.Action("GetTeacherLectures", "SubstituteTeacher")'
+            + '?teacherName='
+            + encodeURIComponent(teacher)
+            + '&day='
+            + encodeURIComponent(selectedDay);
+
+
+        fetch(url)
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Unable to load lectures."
+                    );
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                timeSlot.innerHTML =
+                    '<option value="">-- Select Lecture --</option>';
+
+
+                if (!data || data.length === 0) {
+
+                    timeSlot.innerHTML =
+                        '<option value="">No lecture found for this teacher</option>';
+
+                    return;
+                }
+
+
+                data.forEach(lecture => {
+
+                    const option =
+                        document.createElement("option");
+
+
+                    option.value =
+                        lecture.timeSlot || "";
+
+
+                    option.textContent =
+                        (lecture.timeSlot || "")
+                        + " | "
+                        + (lecture.className || "")
+                        + " | "
+                        + (lecture.subject || "");
+
+
+                    option.dataset.subject =
+                        lecture.subject || "";
+
+
+                    option.dataset.className =
+                        lecture.className || "";
+
+
+                    timeSlot.appendChild(option);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                timeSlot.innerHTML =
+                    '<option value="">Unable to load lectures</option>';
+
+            });
+    }
+
+
+    // =====================================================
+    // LECTURE SELECTED
+    // =====================================================
+
+    timeSlot.addEventListener(
+        "change",
+        function() {
+
+            const selected =
+                this.options[this.selectedIndex];
+
+
+            subject.innerHTML =
+                '<option value="">-- Select Subject --</option>';
+
+            className.innerHTML =
+                '<option value="">-- Select Class --</option>';
+
+
+            substituteTeacher.innerHTML =
+                '<option value="">-- Checking Availability --</option>';
+
+
+            if (!selected || !selected.value) {
+
+                substituteTeacher.innerHTML =
+                    '<option value="">-- Select Lecture First --</option>';
+
+                return;
+            }
+
+
+            // =============================================
+            // SUBJECT
+            // =============================================
+
+            const subjectOption =
+                document.createElement("option");
+
+            subjectOption.value =
+                selected.dataset.subject || "";
+
+            subjectOption.textContent =
+                selected.dataset.subject || "";
+
+            subjectOption.selected = true;
+
+            subject.appendChild(subjectOption);
+
+
+            // =============================================
+            // CLASS
+            // =============================================
+
+            const classOption =
+                document.createElement("option");
+
+            classOption.value =
+                selected.dataset.className || "";
+
+            classOption.textContent =
+                selected.dataset.className || "";
+
+            classOption.selected = true;
+
+            className.appendChild(classOption);
+
+
+            // =============================================
+            // FREE TEACHERS
+            // =============================================
+
+            loadFreeTeachers(
+                selected.value
+            );
+
+        }
+    );
+
+
+    // =====================================================
+    // FIND FREE TEACHERS
+    // =====================================================
+
+    function loadFreeTeachers(selectedTime) {
+
+        const selectedDay =
+            day.value;
+
+        const absent =
+            absentTeacher.value;
+
+
+        substituteTeacher.innerHTML =
+            '<option value="">-- Checking Availability --</option>';
+
+
+        const url =
+            '@Url.Action("GetFreeTeachers", "SubstituteTeacher")'
+            + '?day='
+            + encodeURIComponent(selectedDay)
+            + '&timeSlot='
+            + encodeURIComponent(selectedTime)
+            + '&absentTeacher='
+            + encodeURIComponent(absent);
+
+
+        fetch(url)
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Unable to check teacher availability."
+                    );
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                substituteTeacher.innerHTML =
+                    '<option value="">-- Select Substitute Teacher --</option>';
+
+
+                if (!data || data.length === 0) {
+
+                    substituteTeacher.innerHTML =
+                        '<option value="">No teacher is free at this time</option>';
+
+                    return;
+                }
+
+
+                data.forEach(teacher => {
+
+                    const option =
+                        document.createElement("option");
+
+
+                    option.value =
+                        teacher.name;
+
+
+                    option.textContent =
+                        teacher.name
+                        + (
+                            teacher.department
+                                ? " — " + teacher.department
+                                : ""
+                        );
+
+
+                    substituteTeacher.appendChild(option);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                substituteTeacher.innerHTML =
+                    '<option value="">Unable to check availability</option>';
+
+            });
+
+    }
+
+
+    // =====================================================
+    // AUTOMATICALLY LOAD WHEN COMING FROM TEACHER LEAVE
+    // =====================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            const teacher =
+                absentTeacher.value;
+
+            const selectedDay =
+                day.value;
+
+
+            console.log(
+                "Leave Teacher:",
+                teacher
+            );
+
+            console.log(
+                "Leave Day:",
+                selectedDay
+            );
+
+
+            if (teacher && selectedDay) {
+
+                loadLectures();
+
+            }
+
+        }
+    );
+
+</script>

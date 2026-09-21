@@ -1,0 +1,208 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.TeacherWorkload>
+
+@{
+    ViewData["Title"] = "Teacher Workload";
+}
+
+<div class="container mt-4">
+
+    <!-- Back Button -->
+    <div class="mb-3">
+        <a asp-controller="Home"
+           asp-action="Dashboard"
+           class="btn btn-outline-primary btn-sm">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🎓 DNYANDEEP COLLEGE OF SCIENCE AND COMMERCE
+        </h2>
+
+        <p class="text-muted mb-1">
+            Khed, Ratnagiri, Maharashtra
+        </p>
+
+        <h4 class="fw-bold">
+            👨‍🏫 Teacher Workload
+        </h4>
+
+        <p class="text-muted">
+            Overview of teacher lecture workload
+        </p>
+
+    </div>
+
+
+    <!-- Workload Table -->
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover text-center align-middle">
+
+                    <thead class="table-primary">
+
+                        <tr>
+                            <th>#</th>
+                            <th>Teacher</th>
+                            <th>Total Lectures</th>
+                            <th>Subjects</th>
+                            <th>Working Days</th>
+                            <th>Classes</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            int number = 1;
+
+                            foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td class="fw-bold">
+                                        @number
+                                    </td>
+
+                                    <td>
+                                        <span class="fw-bold text-primary">
+                                            👨‍🏫 @item.TeacherName
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary workload-badge">
+                                            @item.TotalLectures
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.Subjects
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-success workload-badge">
+                                            @item.WorkingDays
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.Classes
+                                    </td>
+
+                                </tr>
+
+                                number++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="6">
+
+                                    <div class="empty-state">
+
+                                        <div class="empty-icon">
+                                            📊
+                                        </div>
+
+                                        <h5 class="text-danger fw-bold">
+                                            No Workload Data
+                                        </h5>
+
+                                        <p class="text-muted mb-0">
+                                            Generate or add timetable entries to view teacher workload.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .container {
+        max-width: 1150px;
+    }
+
+    .workload-badge {
+        font-size: 13px;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+
+    .table {
+        font-size: 13px;
+    }
+
+        .table thead th {
+            padding: 10px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 10px;
+        }
+
+    .empty-state {
+        padding: 35px 15px;
+    }
+
+    .empty-icon {
+        font-size: 40px;
+        margin-bottom: 8px;
+    }
+
+    @@media (max-width: 768px) {
+
+        .table {
+            font-size: 11px;
+        }
+
+            .table thead th,
+            .table tbody td {
+                padding: 7px;
+            }
+    }
+
+    @@media print {
+
+        .btn {
+            display: none !important;
+        }
+
+        .container {
+            max-width: 100%;
+        }
+
+        .table {
+            font-size: 10px;
+        }
+    }
+
+</style>

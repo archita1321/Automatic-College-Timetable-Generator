@@ -1,0 +1,652 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.BulkSubjectViewModel
+
+@{
+    ViewData["Title"] = "Add Teacher Subjects";
+}
+
+<div class="container mt-4 mb-5">
+
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary btn-sm rounded-pill px-3 mb-3">
+            ← Back to Subjects
+        </a>
+
+        <h2 class="fw-bold text-primary">
+            📚 Add Teacher Subjects
+        </h2>
+
+        <p class="text-muted mb-0">
+            Assign multiple subjects to one teacher.
+        </p>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            ✅ @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <!-- VALIDATION -->
+    <div asp-validation-summary="All"
+         class="alert alert-danger"
+         role="alert">
+    </div>
+
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- ================= TEACHER ================= -->
+
+                <div class="mb-4">
+
+                    <label asp-for="TeacherId"
+                           class="form-label fw-bold">
+                        👩‍🏫 Select Teacher
+                    </label>
+
+                    <select asp-for="TeacherId"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Select Teacher --
+                        </option>
+
+                        @if (ViewBag.Teachers != null)
+                        {
+                            foreach (var teacher in ViewBag.Teachers)
+                            {
+                                <option value="@teacher.Id">
+                                    @teacher.TeacherName
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="TeacherId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <hr />
+
+
+                <!-- ================= SUBJECT INFORMATION ================= -->
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div>
+                        <h5 class="fw-bold text-primary mb-1">
+                            📖 Subject Assignments
+                        </h5>
+
+                        <small class="text-muted">
+                            Add all subjects taught by this teacher.
+                        </small>
+                    </div>
+
+                    <span class="badge bg-primary">
+                        Multiple Subjects
+                    </span>
+
+                </div>
+
+
+                <div id="subjectContainer">
+
+                    <!-- FIRST ROW -->
+
+                    <div class="subject-row border rounded-3 p-3 mb-3">
+
+                        <div class="row g-3">
+
+                            <!-- SUBJECT NAME -->
+
+                            <div class="col-lg-4 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Subject Name
+                                </label>
+
+                                <input name="Subjects[0].SubjectName"
+                                       class="form-control"
+                                       placeholder="e.g. Computer Networks"
+                                       required />
+
+                            </div>
+
+
+                            <!-- CLASS -->
+
+                            <div class="col-lg-4 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Class
+                                </label>
+
+                                <select name="Subjects[0].ClassName"
+                                        class="form-select class-select"
+                                        onchange="classChanged(this)"
+                                        required>
+
+                                    <option value="">
+                                        -- Select Class --
+                                    </option>
+
+                                    @if (ViewBag.Classes != null)
+                                    {
+                                        foreach (var cls in ViewBag.Classes)
+                                        {
+                                            <option value="@cls.ClassName"
+                                                    data-department="@cls.Department"
+                                                    data-semester="@cls.Semester">
+
+                                                @cls.ClassName - Semester @cls.Semester
+
+                                            </option>
+                                        }
+                                    }
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- DEPARTMENT -->
+
+                            <div class="col-lg-2 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Department
+                                </label>
+
+                                <input name="Subjects[0].Department"
+                                       class="form-control department-field"
+                                       placeholder="Auto"
+                                       readonly
+                                       required />
+
+                            </div>
+
+
+                            <!-- SEMESTER -->
+
+                            <div class="col-lg-2 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Semester
+                                </label>
+
+                                <input name="Subjects[0].Semester"
+                                       type="number"
+                                       class="form-control semester-field"
+                                       min="1"
+                                       max="6"
+                                       readonly
+                                       required />
+
+                            </div>
+
+
+                            <!-- SUBJECT TYPE -->
+
+                            <div class="col-lg-3 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Subject Type
+                                </label>
+
+                                <select name="Subjects[0].SubjectType"
+                                        class="form-select subject-type"
+                                        onchange="updateDuration(this)"
+                                        required>
+
+                                    <option value="Theory">
+                                        Theory
+                                    </option>
+
+                                    <option value="Practical">
+                                        Practical
+                                    </option>
+
+                                    <option value="Project">
+                                        Project
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- LECTURES -->
+
+                            <div class="col-lg-3 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Lectures / Week
+                                </label>
+
+                                <input name="Subjects[0].LectureCount"
+                                       type="number"
+                                       class="form-control lecture-count"
+                                       value="2"
+                                       readonly
+                                       required />
+
+                            </div>
+
+
+                            <!-- DURATION -->
+
+                            <div class="col-lg-3 col-md-6">
+
+                                <label class="form-label fw-bold">
+                                    Duration
+                                </label>
+
+                                <input name="Subjects[0].Duration"
+                                       class="form-control duration"
+                                       value="1 Hour"
+                                       readonly
+                                       required />
+
+                            </div>
+
+
+                            <!-- REMOVE -->
+
+                            <div class="col-lg-3 col-md-6 d-flex align-items-end">
+
+                                <button type="button"
+                                        class="btn btn-outline-danger w-100"
+                                        onclick="removeSubject(this)">
+
+                                    🗑 Remove
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ADD ANOTHER -->
+
+                <button type="button"
+                        class="btn btn-outline-primary rounded-pill px-4 mb-4"
+                        onclick="addSubject()">
+
+                    ➕ Add Another Subject
+
+                </button>
+
+                <br />
+
+
+                <!-- SAVE -->
+
+                <button type="submit"
+                        class="btn btn-success rounded-pill px-5">
+
+                    💾 Save All Subjects
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary rounded-pill px-4 ms-2">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let rowIndex = 1;
+
+
+    // =====================================================
+    // CLASS → AUTOMATIC DEPARTMENT + SEMESTER
+    // =====================================================
+
+    function classChanged(select) {
+
+        const row = select.closest(".subject-row");
+
+        const selectedOption =
+            select.options[select.selectedIndex];
+
+        const department =
+            selectedOption.getAttribute("data-department");
+
+        const semester =
+            selectedOption.getAttribute("data-semester");
+
+        const departmentField =
+            row.querySelector(".department-field");
+
+        const semesterField =
+            row.querySelector(".semester-field");
+
+        if (department) {
+
+            departmentField.value = department;
+
+        }
+        else {
+
+            departmentField.value = "";
+
+        }
+
+        if (semester) {
+
+            semesterField.value = semester;
+
+        }
+        else {
+
+            semesterField.value = "";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SUBJECT TYPE → AUTOMATIC LECTURE + DURATION
+    // =====================================================
+
+    function updateDuration(select) {
+
+        const row =
+            select.closest(".subject-row");
+
+        const lectureCount =
+            row.querySelector(".lecture-count");
+
+        const duration =
+            row.querySelector(".duration");
+
+
+        // THEORY
+        if (select.value === "Theory") {
+
+            lectureCount.value = 2;
+
+            duration.value = "1 Hour";
+
+        }
+
+
+        // PRACTICAL
+        else if (select.value === "Practical") {
+
+            lectureCount.value = 1;
+
+            duration.value = "2 Hours";
+
+        }
+
+
+        // PROJECT
+        else if (select.value === "Project") {
+
+            lectureCount.value = 1;
+
+            duration.value = "2 Hours";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // ADD ANOTHER SUBJECT
+    // =====================================================
+
+    function addSubject() {
+
+        const container =
+            document.getElementById("subjectContainer");
+
+
+        const row =
+            document.createElement("div");
+
+
+        row.className =
+            "subject-row border rounded-3 p-3 mb-3";
+
+
+        row.innerHTML = `
+
+                <div class="row g-3">
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Subject Name
+                        </label>
+
+                        <input name="Subjects[${rowIndex}].SubjectName"
+                               class="form-control"
+                               placeholder="e.g. Computer Networks"
+                               required />
+
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Class
+                        </label>
+
+                        <select name="Subjects[${rowIndex}].ClassName"
+                                class="form-select class-select"
+                                onchange="classChanged(this)"
+                                required>
+
+                            <option value="">
+                                -- Select Class --
+                            </option>
+
+                            @if (ViewBag.Classes != null)
+                            {
+                                    foreach (var cls in ViewBag.Classes)
+                                    {
+                                            <option value="@cls.ClassName"
+                    data-department="@cls.Department"
+                    data-semester="@cls.Semester">
+
+                                                    @cls.ClassName - Semester @cls.Semester
+
+                                            </option>
+                                    }
+                            }
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Department
+                        </label>
+
+                        <input name="Subjects[${rowIndex}].Department"
+                               class="form-control department-field"
+                               placeholder="Auto"
+                               readonly
+                               required />
+
+                    </div>
+
+
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Semester
+                        </label>
+
+                        <input name="Subjects[${rowIndex}].Semester"
+                               type="number"
+                               class="form-control semester-field"
+                               min="1"
+                               max="6"
+                               readonly
+                               required />
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Subject Type
+                        </label>
+
+                        <select name="Subjects[${rowIndex}].SubjectType"
+                                class="form-select subject-type"
+                                onchange="updateDuration(this)"
+                                required>
+
+                            <option value="Theory">
+                                Theory
+                            </option>
+
+                            <option value="Practical">
+                                Practical
+                            </option>
+
+                            <option value="Project">
+                                Project
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Lectures / Week
+                        </label>
+
+                        <input name="Subjects[${rowIndex}].LectureCount"
+                               type="number"
+                               class="form-control lecture-count"
+                               value="2"
+                               readonly
+                               required />
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Duration
+                        </label>
+
+                        <input name="Subjects[${rowIndex}].Duration"
+                               class="form-control duration"
+                               value="1 Hour"
+                               readonly
+                               required />
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6 d-flex align-items-end">
+
+                        <button type="button"
+                                class="btn btn-outline-danger w-100"
+                                onclick="removeSubject(this)">
+
+                            🗑 Remove
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+        container.appendChild(row);
+
+        rowIndex++;
+
+    }
+
+
+    // =====================================================
+    // REMOVE SUBJECT
+    // =====================================================
+
+    function removeSubject(button) {
+
+        const rows =
+            document.querySelectorAll(".subject-row");
+
+
+        if (rows.length <= 1) {
+
+            alert("At least one subject is required.");
+
+            return;
+
+        }
+
+
+        button.closest(".subject-row").remove();
+
+    }
+
+</script>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

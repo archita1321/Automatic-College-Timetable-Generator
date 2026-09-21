@@ -1,0 +1,773 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+
+    <!-- Dashboard Header -->
+    <!-- Dashboard Header -->
+
+    <div class="row align-items-center mb-4">
+
+        <!-- Left Side -->
+        <div class="col-md-3">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-outline-primary">
+                ← Back to Home
+            </a>
+
+        </div>
+
+
+        <!-- Center -->
+        <div class="col-md-6 text-center">
+
+            <h1 class="display-5 fw-bold text-primary">
+                🎓 Admin Dashboard
+            </h1>
+
+            <p class="lead text-secondary mb-0">
+                Welcome, Administrator 👋
+            </p>
+
+        </div>
+
+
+        <!-- Right Side -->
+        <div class="col-md-3 text-end">
+
+            <div class="text-muted mb-1">
+                <i class="bi bi-calendar3 text-primary"></i>
+                <span id="currentDate"></span>
+            </div>
+
+
+            <div class="text-primary mb-2">
+                <i class="bi bi-clock"></i>
+                <span id="currentTime"></span>
+            </div>
+
+
+            <a asp-controller="Home"
+               asp-action="Logout"
+               class="btn btn-danger">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+    <!-- Welcome Banner -->
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4"
+         style="background:linear-gradient(135deg,#0d6efd,#6f42c1);">
+
+        <div class="card-body text-white p-4">
+
+            <h3 class="fw-bold">
+                Welcome to Automatic College Timetable Generator 🎓
+            </h3>
+
+            <p class="mb-0">
+                Manage teachers, subjects, classrooms and generate conflict-free timetables easily.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-3 mb-5">
+
+
+        <!-- Teachers -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#0d6efd,#4f8cff);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-workspace"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.TeacherCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Teachers
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Subjects -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#198754,#20c997);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-book-half"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.SubjectCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Subjects
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Departments -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#fd7e14,#ffc107);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-building"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.DepartmentCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Departments
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Classrooms -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#0dcaf0,#0d6efd);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-door-open"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.ClassroomCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Classrooms
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Classes -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#6f42c1,#d63384);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-mortarboard"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.ClassCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Classes
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Timetables -->
+
+        <div class="col-md-2">
+
+            <div class="card border-0 shadow-lg rounded-4 text-white stats-card"
+                 style="background:linear-gradient(135deg,#212529,#495057);">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-calendar-check"
+                       style="font-size:35px;"></i>
+
+                    <h1 class="fw-bold mt-2">
+                        @ViewBag.TimetableCount
+                    </h1>
+
+                    <p class="mb-0 fs-5">
+                        Timetables
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+            <!-- Quick Actions -->
+
+            <div class="card border-0 shadow-sm rounded-4 mb-5">
+
+                <div class="card-body">
+
+                    <h4 class="fw-bold text-primary mb-3">
+                        ⚡ Quick Actions
+                    </h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-3">
+
+                            <a asp-controller="Teacher"
+                               asp-action="Create"
+                               class="btn btn-primary w-100 rounded-pill py-2">
+
+                                <i class="bi bi-person-plus"></i>
+                                Add Teacher
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <a asp-controller="Subject"
+                               asp-action="Create"
+                               class="btn btn-success w-100 rounded-pill py-2">
+
+                                <i class="bi bi-book"></i>
+                                Add Subject
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <a asp-controller="Classroom"
+                               asp-action="Create"
+                               class="btn btn-info w-100 rounded-pill py-2">
+
+                                <i class="bi bi-door-open"></i>
+                                Add Classroom
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <a asp-controller="Timetable"
+                               asp-action="Create"
+                               class="btn btn-warning w-100 rounded-pill py-2">
+
+                                <i class="bi bi-calendar-plus"></i>
+                                Generate Timetable
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+    <!-- Modules -->
+    <div class="row g-4">
+
+        <!-- Teachers -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+                    <div class="text-primary mb-3">
+                        <i class="bi bi-person-workspace" style="font-size:55px;"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Teachers</h5>
+                    <p class="text-muted small">Manage teacher information</p>
+                    <a asp-controller="Teacher" asp-action="Index"
+                       class="btn btn-primary rounded-pill px-4">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+                    <div class="text-success mb-3">
+                        <i class="bi bi-book-half" style="font-size:55px;"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Subjects</h5>
+                    <p class="text-muted small">Manage subject information</p>
+                    <a asp-controller="Subject" asp-action="Index"
+                       class="btn btn-success rounded-pill px-4">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-building" style="font-size:55px;"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Departments</h5>
+                    <p class="text-muted small">Manage departments</p>
+                    <a asp-controller="Department" asp-action="Index"
+                       class="btn btn-warning rounded-pill px-4">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classrooms -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+                    <div class="text-info mb-3">
+                        <i class="bi bi-door-open" style="font-size:55px;"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Classrooms</h5>
+                    <p class="text-muted small">Manage classrooms</p>
+                    <a asp-controller="Classroom" asp-action="Index"
+                       class="btn btn-info rounded-pill px-4">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+                    <div class="text-secondary mb-3">
+                        <i class="bi bi-mortarboard" style="font-size:55px;"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3">Classes</h5>
+                    <p class="text-muted small">Manage classes</p>
+                    <a asp-controller="Class" asp-action="Index"
+                       class="btn btn-secondary rounded-pill px-4">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate Timetable -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+
+                    <div class="text-primary mb-3">
+                        <i class="bi bi-calendar-check" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Generate Timetable
+                    </h5>
+
+                    <p class="text-muted small">
+                        Create timetable automatically
+                    </p>
+
+                    <a asp-controller="Timetable"
+                       asp-action="AutoGenerate"
+                       class="btn btn-primary rounded-pill px-4">
+                        Open
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- View Timetable -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+                <div class="card-body text-center p-4">
+
+                    <div class="text-dark mb-3">
+                        <i class="bi bi-table" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        View Timetable
+                    </h5>
+
+                    <p class="text-muted small">
+                        View generated timetable
+                    </p>
+
+                    <a asp-controller="Timetable"
+                       asp-action="Index"
+                       class="btn btn-dark rounded-pill px-4">
+                        Open
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Timetable -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-info mb-3">
+                        <i class="bi bi-person-lines-fill" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Teacher Timetable
+                    </h5>
+
+                    <p class="text-muted small">
+                        View individual teacher timetable
+                    </p>
+
+                    <a asp-controller="Timetable"
+                       asp-action="TeacherTimetable"
+                       class="btn btn-info rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Teacher Workload -->
+        <!-- Teacher Workload -->
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-success mb-3">
+                        <i class="bi bi-bar-chart-line" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Teacher Workload
+                    </h5>
+
+                    <p class="text-muted small">
+                        View teacher lecture workload
+                    </p>
+
+                    <a asp-controller="Timetable"
+                       asp-action="TeacherWorkload"
+                       class="btn btn-success rounded-pill px-4">
+                        Open
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Teacher Login -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-primary mb-3">
+                        <i class="bi bi-box-arrow-in-right" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Teacher Login
+                    </h5>
+
+                    <p class="text-muted small">
+                        Login as Teacher
+                    </p>
+
+                    <a asp-controller="Teacher"
+                       asp-action="Login"
+                       class="btn btn-primary rounded-pill px-4">
+
+                        Login
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Teacher Leave -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-success mb-3">
+                        <i class="bi bi-calendar-check" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Teacher Leave
+                    </h5>
+
+                    <p class="text-muted small">
+                        Manage teacher leave requests
+                    </p>
+
+                    <a asp-controller="TeacherLeave"
+                       asp-action="Index"
+                       class="btn btn-success rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Substitute Teacher -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-person-check" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Substitute Teacher
+                    </h5>
+
+                    <p class="text-muted small">
+                        Assign replacement teacher
+                    </p>
+
+                    <a asp-controller="SubstituteTeacher"
+                       asp-action="Index"
+                       class="btn btn-warning rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Notifications -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-danger mb-3">
+                        <i class="bi bi-bell" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Notifications
+                    </h5>
+
+                    <p class="text-muted small">
+                        View system notifications
+                    </p>
+
+                    <a asp-controller="Notification"
+                       asp-action="Index"
+                       class="btn btn-danger rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Timetable History -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-secondary mb-3">
+                        <i class="bi bi-clock-history" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Timetable History
+                    </h5>
+
+                    <p class="text-muted small">
+                        View previous timetable changes
+                    </p>
+
+                    <a asp-controller="TimetableHistory"
+                       asp-action="Index"
+                       class="btn btn-secondary rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Manage Class Login -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm rounded-4 h-100 dashboard-card">
+
+                <div class="card-body text-center p-4">
+
+                    <div class="text-success mb-3">
+                        <i class="bi bi-people-fill" style="font-size:55px;"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Manage Class Login
+                    </h5>
+
+                    <p class="text-muted small">
+                        Create class-wise student login accounts
+                    </p>
+
+                    <a asp-controller="ClassLogin"
+                       asp-action="Index"
+                       class="btn btn-success rounded-pill px-4">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    <script>
+
+            function updateDateTime() {
+
+                let now = new Date();
+
+                document.getElementById("currentDate").innerHTML =
+                    now.toLocaleDateString();
+
+                document.getElementById("currentTime").innerHTML =
+                    now.toLocaleTimeString();
+
+            }
+
+
+            setInterval(updateDateTime, 1000);
+
+            updateDateTime();
+
+    </script>
+    <style>
+
+            .stats-card,
+            .dashboard-card {
+                transition: 0.3s;
+            }
+
+                .stats-card:hover,
+                .dashboard-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 12px 25px rgba(0,0,0,0.25) !important;
+                }
+
+    </style>

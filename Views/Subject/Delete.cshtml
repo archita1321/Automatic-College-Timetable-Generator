@@ -1,0 +1,106 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Subject
+
+@{
+    ViewData["Title"] = "Delete Subject";
+}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">
+                🗑️ Delete Subject
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Are you sure?</strong>
+                <br />
+                This subject and its matching teacher assignment will be deleted.
+            </div>
+
+            <dl class="row">
+
+                <dt class="col-sm-4">
+                    Subject Name
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.SubjectName
+                </dd>
+
+                <dt class="col-sm-4">
+                    Subject Type
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.SubjectType
+                </dd>
+
+                <dt class="col-sm-4">
+                    Teacher
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Teacher
+                </dd>
+
+                <dt class="col-sm-4">
+                    Class
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.ClassName
+                </dd>
+
+                <dt class="col-sm-4">
+                    Department
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Department
+                </dd>
+
+                <dt class="col-sm-4">
+                    Semester
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Semester
+                </dd>
+
+                <dt class="col-sm-4">
+                    Lecture Count
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.LectureCount
+                </dd>
+
+                <dt class="col-sm-4">
+                    Duration
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Duration
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <form asp-action="DeleteConfirmed" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    🗑️ Yes, Delete Subject
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary ms-2">
+                    ↩️ Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

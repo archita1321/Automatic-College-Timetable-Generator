@@ -1,0 +1,215 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Classroom
+
+@{
+    ViewData["Title"] = "Add Classroom";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary">Add Classroom</h2>
+    <hr />
+
+    <form asp-action="Create" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <!-- ROOM NUMBER -->
+        <div class="mb-3">
+            <label asp-for="RoomNumber" class="form-label">
+                Room Number
+            </label>
+
+            <input asp-for="RoomNumber"
+                   class="form-control"
+                   placeholder="Example: 101" />
+
+            <span asp-validation-for="RoomNumber"
+                  class="text-danger"></span>
+        </div>
+
+
+        <!-- CAPACITY -->
+        <div class="mb-3">
+            <label asp-for="Capacity" class="form-label">
+                Capacity
+            </label>
+
+            <input asp-for="Capacity"
+                   class="form-control"
+                   type="number"
+                   min="1"
+                   max="500"
+                   placeholder="Example: 30" />
+
+            <span asp-validation-for="Capacity"
+                  class="text-danger"></span>
+        </div>
+
+
+        <!-- ROOM TYPE -->
+        <div class="mb-3">
+            <label asp-for="RoomType" class="form-label">
+                Room Type
+            </label>
+
+            <select asp-for="RoomType"
+                    class="form-control">
+
+                <option value="">
+                    -- Select Room Type --
+                </option>
+
+                <option value="Classroom">
+                    Classroom
+                </option>
+
+                <option value="Computer Lab">
+                    Computer Lab
+                </option>
+
+                <option value="Laboratory">
+                    Laboratory
+                </option>
+
+            </select>
+
+            <span asp-validation-for="RoomType"
+                  class="text-danger"></span>
+        </div>
+
+
+        <!-- DEPARTMENT -->
+        <div class="mb-3">
+            <label asp-for="Department"
+                   class="form-label">
+                Department
+            </label>
+
+            <select asp-for="Department"
+                    class="form-control"
+                    id="departmentSelect">
+
+                <option value="">
+                    -- Select Department --
+                </option>
+
+                @foreach (var department in ViewBag.Departments)
+                {
+                    <option value="@department.DepartmentName">
+                        @department.DepartmentName
+                    </option>
+                }
+
+            </select>
+
+            <span asp-validation-for="Department"
+                  class="text-danger"></span>
+        </div>
+
+
+        <!-- CLASS -->
+        <div class="mb-3">
+
+            <label asp-for="ClassName" class="form-label">
+                Class
+            </label>
+
+            <select asp-for="ClassName"
+                    class="form-control">
+
+                <option value="">
+                    -- Select Class --
+                </option>
+
+                <option value="FYCS">FYCS</option>
+                <option value="SYCS">SYCS</option>
+                <option value="TYCS">TYCS</option>
+
+                <option value="FYIT">FYIT</option>
+                <option value="SYIT">SYIT</option>
+                <option value="TYIT">TYIT</option>
+
+                <option value="FYBCOM">FYBCOM</option>
+                <option value="SYBCOM">SYBCOM</option>
+                <option value="TYBCOM">TYBCOM</option>
+
+                <option value="FYHM">FYHM</option>
+                <option value="SYHM">SYHM</option>
+                <option value="TYHM">TYHM</option>
+
+            </select>
+
+            <span asp-validation-for="ClassName"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <button type="submit"
+                class="btn btn-success">
+
+            Save Classroom
+
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary ms-2">
+
+            ← Back
+
+        </a>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    const departmentSelect =
+        document.getElementById("departmentSelect");
+
+    const classSelect =
+        document.getElementById("classSelect");
+
+
+    departmentSelect.addEventListener("change", function() {
+
+        const selectedDepartment =
+            this.value.toLowerCase();
+
+        const options =
+            classSelect.querySelectorAll("option");
+
+
+        options.forEach(function(option, index) {
+
+            if (index === 0) {
+                option.style.display = "";
+                return;
+            }
+
+            const department =
+                (option.getAttribute("data-department") || "")
+                    .toLowerCase();
+
+            if (!selectedDepartment ||
+                department === selectedDepartment) {
+
+                option.style.display = "";
+
+            } else {
+
+                option.style.display = "none";
+
+            }
+
+        });
+
+
+        classSelect.value = "";
+
+    });
+
+</script>

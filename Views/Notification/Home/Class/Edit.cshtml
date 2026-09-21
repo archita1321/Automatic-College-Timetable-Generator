@@ -1,0 +1,72 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Class
+
+@{
+    ViewData["Title"] = "Edit Class";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary">Edit Class</h2>
+    <hr />
+
+    <form asp-action="Edit" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="ClassName" class="form-label"></label>
+
+            <input asp-for="ClassName"
+                   class="form-control" />
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="Department" class="form-label"></label>
+
+            <select asp-for="Department"
+                    class="form-control">
+
+                <option value="">-- Select Department --</option>
+
+                @foreach (var department in ViewBag.Departments)
+                {
+                    <option value="@department.DepartmentName">
+                        @department.DepartmentName
+                    </option>
+                }
+
+            </select>
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="Semester" class="form-label"></label>
+
+            <select asp-for="Semester"
+                    class="form-control">
+
+                <option value="">-- Select Semester --</option>
+
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+
+            </select>
+        </div>
+
+
+        <button type="submit" class="btn btn-success">
+            Update
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary ms-2">
+            ← Back
+        </a>
+
+    </form>
+
+</div>

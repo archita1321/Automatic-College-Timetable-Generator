@@ -1,0 +1,262 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Subject
+
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0 rounded-4 mx-auto"
+         style="max-width: 650px;">
+
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4 class="mb-0">
+                ✏️ Edit Subject
+            </h4>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-controller="Subject"
+                  asp-action="Edit"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <!-- =========================
+                     SUBJECT NAME
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label asp-for="SubjectName"
+                           class="form-label fw-bold">
+                        Subject Name
+                    </label>
+
+                    <input asp-for="SubjectName"
+                           class="form-control"
+                           placeholder="Enter Subject Name" />
+
+                    <span asp-validation-for="SubjectName"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- =========================
+                     TEACHER
+                     READ ONLY
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Teacher
+                    </label>
+
+                    <input type="text"
+                           class="form-control bg-light"
+                           value="@Model.Teacher"
+                           readonly />
+
+                    <small class="text-muted">
+                        Teacher cannot be changed while editing a subject.
+                    </small>
+
+                </div>
+
+
+                <!-- =========================
+                     CLASS
+                     READ ONLY
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Class
+                    </label>
+
+                    <input type="text"
+                           class="form-control bg-light"
+                           value="@Model.ClassName"
+                           readonly />
+
+                </div>
+
+
+                <!-- =========================
+                     DEPARTMENT
+                     READ ONLY
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Department
+                    </label>
+
+                    <input type="text"
+                           class="form-control bg-light"
+                           value="@Model.Department"
+                           readonly />
+
+                </div>
+
+
+                <!-- =========================
+                     SEMESTER
+                     READ ONLY
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Semester
+                    </label>
+
+                    <input type="text"
+                           class="form-control bg-light"
+                           value="Semester @Model.Semester"
+                           readonly />
+
+                </div>
+
+
+                <!-- =========================
+                     SUBJECT TYPE
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label asp-for="SubjectType"
+                           class="form-label fw-bold">
+                        Subject Type
+                    </label>
+
+                    <select asp-for="SubjectType"
+                            id="SubjectType"
+                            class="form-select">
+
+                        <option value="Theory">
+                            Theory
+                        </option>
+
+                        <option value="Practical">
+                            Practical
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="SubjectType"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- =========================
+                     LECTURES PER WEEK
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Lectures / Week
+                    </label>
+
+                    <input type="text"
+                           id="LectureDisplay"
+                           class="form-control bg-light"
+                           value="@Model.LectureCount"
+                           readonly />
+
+                </div>
+
+
+                <!-- =========================
+                     DURATION
+                     ========================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Duration
+                    </label>
+
+                    <input type="text"
+                           id="DurationDisplay"
+                           class="form-control bg-light"
+                           value="@Model.Duration"
+                           readonly />
+
+                </div>
+
+
+                <!-- =========================
+                     BUTTONS
+                     ========================= -->
+
+                <div class="d-flex justify-content-between mt-4">
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        ← Back
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary px-4">
+                        💾 Update Subject
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.getElementById("SubjectType")
+            .addEventListener("change", function() {
+
+                var type = this.value;
+
+                var lecture =
+                    document.getElementById("LectureDisplay");
+
+                var duration =
+                    document.getElementById("DurationDisplay");
+
+
+                if (type === "Practical") {
+
+                    lecture.value = "1";
+                    duration.value = "2 Hours";
+
+                }
+                else {
+
+                    lecture.value = "2";
+                    duration.value = "1 Hour";
+
+                }
+
+            });
+
+    </script>
+}

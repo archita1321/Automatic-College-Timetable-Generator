@@ -1,0 +1,159 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.Timetable>
+
+@{
+    ViewData["Title"] = "View Timetable";
+    var labMap =
+    ViewBag.LabMap as Dictionary<string, string>
+    ?? new Dictionary<string, string>();
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-primary">
+                📅 Generated Timetable
+            </h2>
+
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ClassName))
+            {
+                <p class="text-muted mb-0">
+                    Timetable for:
+                    <strong class="text-primary">
+                        @ViewBag.ClassName
+                    </strong>
+                </p>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    View the generated class timetable.
+                </p>
+            }
+
+            <p class="text-muted mb-0">
+                View all generated timetable entries.
+            </p>
+        </div>
+
+        <div>
+            <a asp-action="AutoGenerate"
+               class="btn btn-success">
+                🤖 Generate Timetable
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary ms-2">
+                ← Back
+            </a>
+        </div>
+
+    </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            ⚠️ No timetable entries found.
+            Please generate the timetable first.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Class</th>
+                                <th>Department</th>
+                                <th>Semester</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
+                                <th>Classroom</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.Day
+                                    </td>
+
+                                    <td>
+                                        @item.TimeSlot
+                                    </td>
+
+                                    <td>
+                                        @item.ClassName
+                                    </td>
+
+                                    <td>
+                                        @item.Department
+                                    </td>
+
+                                    <td>
+                                        @item.Semester
+                                    </td>
+
+                                    <td class="fw-bold">
+                                        @item.Subject
+                                    </td>
+
+                                    <td>
+                                        @item.Teacher
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.Classroom))
+                                        {
+                                            var classroom = item.Classroom.Trim();
+
+                                            if (classroom == "111" ||
+                                                classroom == "112" ||
+                                                classroom == "113" ||
+                                                classroom == "114" ||
+                                                classroom == "115" ||
+                                                classroom == "116" ||
+                                                classroom == "201" ||
+                                                classroom == "202" ||
+                                                classroom == "203")
+                                            {
+                                                <span>Lab: @classroom</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Room: @classroom</span>
+                                            }
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

@@ -1,0 +1,307 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.Timetable>
+
+@{
+    ViewData["Title"] = "Weekly Timetable";
+}
+
+<div class="container mt-4">
+
+    <!-- BACK TO DASHBOARD -->
+    <div class="mb-3">
+        <a asp-controller="Home"
+           asp-action="Dashboard"
+           class="btn btn-outline-primary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- COLLEGE HEADER -->
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🎓 DNYANDEEP COLLEGE OF SCIENCE AND COMMERCE
+        </h2>
+
+        <h4 class="text-secondary">
+            Automatic College Timetable Generator
+        </h4>
+
+        <p class="text-muted mb-2">
+            Khed, Ratnagiri, Maharashtra
+        </p>
+
+        <p class="mb-2">
+            <b>Academic Year:</b> 2026-27
+        </p>
+
+        @if (!string.IsNullOrWhiteSpace(ViewBag.ClassName))
+        {
+            <p>
+                <b>Class:</b> @ViewBag.ClassName
+            </p>
+        }
+
+    </div>
+
+
+    <!-- CLASS SELECTOR -->
+    <form method="get"
+          asp-controller="Timetable"
+          asp-action="WeeklyTimetable">
+
+        <div class="row mb-4">
+
+            <div class="col-md-4">
+
+                <select name="className"
+                        class="form-control">
+
+                    <option value="">
+                        Select Class
+                    </option>
+
+                    @foreach (var item in ViewBag.Classes)
+                    {
+                        <option value="@item"
+                                selected="@(ViewBag.ClassName == item ? "selected" : null)">
+                            @item
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    View
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- PRINT BUTTON -->
+    <button onclick="window.print()"
+            class="btn btn-success mb-3">
+
+        🖨 Print Timetable
+
+    </button>
+
+
+    <!-- WEEKLY TABLE -->
+    <table class="table table-bordered text-center">
+
+        <thead class="table-primary">
+
+            <tr>
+                <th>Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var time in new[]
+            {
+                "9:00 AM - 10:00 AM",
+                "10:00 AM - 11:00 AM",
+                "11:30 AM - 12:30 PM",
+                "12:30 PM - 1:30 PM"
+            })
+            {
+
+                <tr>
+
+                    <td class="fw-bold">
+                        @time
+                    </td>
+
+                    @foreach (var day in new[]
+                    {
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday"
+                    })
+                    {
+
+                        <td>
+
+                            @{
+                                var lecture = Model.FirstOrDefault(x =>
+                                    x.Day == day &&
+                                    x.TimeSlot == time);
+                            }
+
+                            @if (lecture != null)
+                            {
+                                <div class="lecture-card">
+
+                                    <b>
+                                        @lecture.Subject
+                                    </b>
+
+                                    <br />
+
+                                    <span>
+                                        👨‍🏫 @lecture.Teacher
+                                    </span>
+
+                                    <br />
+
+                                    <small>
+                                        @if (lecture.SubjectType.Equals("Practical", StringComparison.OrdinalIgnoreCase) ||
+                                             lecture.SubjectType.Equals("Theory + Practical", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            @:🧪 Lab: @lecture.Classroom
+                                        }
+                                        else
+                                        {
+                                            @:🚪 Room: @lecture.Classroom
+                                        }
+                                    </small>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    —
+                                </span>
+                            }
+
+                        </td>
+
+                    }
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- PRINT FOOTER -->
+    <div class="row mt-5 print-footer"
+         style="display:none;">
+
+        <div class="col-md-4 text-center">
+            <br><br>
+            ___________________
+            <br>
+            Class Teacher
+        </div>
+
+        <div class="col-md-4 text-center">
+            <br><br>
+            ___________________
+            <br>
+            HOD
+        </div>
+
+        <div class="col-md-4 text-center">
+            <br><br>
+            ___________________
+            <br>
+            Principal
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .lecture-card {
+        background: linear-gradient(135deg,#0d6efd,#6f42c1);
+        color: white;
+        padding: 6px;
+        border-radius: 8px;
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+        .lecture-card b {
+            font-size: 13px;
+        }
+
+        .lecture-card small,
+        .lecture-card span {
+            font-size: 11px;
+        }
+
+    .table {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+        .table th {
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            height: 75px;
+            padding: 5px;
+        }
+
+    .text-center h2 {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+
+    .text-center h4 {
+        font-size: 16px;
+        margin-bottom: 3px;
+    }
+
+    .text-center p {
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    @@media print {
+
+        .btn,
+        form {
+            display: none !important;
+        }
+
+        .print-footer {
+            display: flex !important;
+            margin-top: 30px;
+        }
+
+        .table {
+            font-size: 10px;
+        }
+
+            .table th {
+                font-size: 10px;
+            }
+
+            .table td {
+                height: 60px;
+            }
+    }
+
+</style>

@@ -1,0 +1,300 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.Timetable>
+
+@{
+    ViewData["Title"] = "My Class Timetable";
+
+    var days = new[]
+    {
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    };
+
+    // Get ALL time slots that actually exist for this class
+    var times = new[]
+{
+    "9:00 AM - 10:00 AM",
+    "10:00 AM - 11:00 AM",
+    "11:30 AM - 12:30 PM",
+    "12:30 PM - 1:30 PM"
+};
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🎓 DNYANDEEP COLLEGE OF SCIENCE AND COMMERCE
+        </h2>
+
+        <h4 class="text-secondary">
+            Automatic College Timetable Generator
+        </h4>
+
+        <p class="text-muted">
+            Khed, Ratnagiri, Maharashtra
+        </p>
+
+        <p>
+            <b>Academic Year:</b> 2026-27
+        </p>
+
+        <h5 class="text-success fw-bold">
+            Class: @Context.Session.GetString("StudentClass")
+        </h5>
+
+        <p class="text-muted">
+            Department: @Context.Session.GetString("StudentDepartment")
+        </p>
+
+        <h4 class="fw-bold text-primary mt-3">
+            📅 My Class Weekly Timetable
+        </h4>
+
+        <p class="text-muted">
+            Timetable for @Context.Session.GetString("StudentClass")
+        </p>
+
+    </div>
+
+
+    <!-- ================= BUTTONS ================= -->
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill">
+
+            ← Home
+
+        </a>
+
+        <div>
+
+            <button onclick="window.print()"
+                    class="btn btn-success rounded-pill me-2">
+
+                🖨 Print Timetable
+
+            </button>
+
+            <a asp-controller="Student"
+               asp-action="Logout"
+               class="btn btn-danger rounded-pill">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TIMETABLE ================= -->
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+
+            <table class="table table-bordered text-center timetable">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="time-column">
+                            Time
+                        </th>
+
+                        @foreach (var day in days)
+                        {
+                            <th>
+                                @day
+                            </th>
+                        }
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @foreach (var time in times)
+                    {
+                        <tr>
+
+                            <!-- TIME -->
+
+                            <td class="time-cell">
+
+                                <strong>
+                                    @time
+                                </strong>
+
+                            </td>
+
+
+                            <!-- DAYS -->
+                            @foreach (var day in days)
+                            {
+                                <td>
+
+                                    @{
+                                        var lectures = Model
+                                            .Where(x =>
+                                                x.Day == day &&
+                                                x.TimeSlot == time)
+                                            .ToList();
+                                    }
+
+
+                                    @if (lectures.Any())
+                                    {
+                                        foreach (var lecture in lectures)
+                                        {
+                                            <div class="lecture-card">
+
+                                                <div class="subject">
+                                                    @lecture.Subject
+                                                </div>
+
+                                                <div>
+                                                    👨‍🏫 @lecture.Teacher
+                                                </div>
+
+                                                <div>
+                                                    🚪 Room: @lecture.Classroom
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="empty-cell">
+                                            —
+                                        </span>
+                                    }
+
+                                </td>
+                            }
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+
+            ⚠️ No timetable has been created for
+            <strong>
+                @Context.Session.GetString("StudentClass")
+            </strong>.
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    .timetable {
+        width: 100%;
+        min-width: 1100px;
+        font-size: 13px;
+    }
+
+        .timetable thead th {
+            background: linear-gradient(135deg,#0d6efd,#6f42c1);
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .timetable td {
+            min-width: 150px;
+            height: 110px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    .time-column {
+        min-width: 160px !important;
+    }
+
+    .time-cell {
+        background: #f1f5f9;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .lecture-card {
+        background: linear-gradient(135deg,#0d6efd,#6f42c1);
+        color: white;
+        padding: 8px;
+        margin: 3px;
+        border-radius: 10px;
+        line-height: 1.5;
+    }
+
+        .lecture-card .subject {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .lecture-card div {
+            font-size: 11px;
+        }
+
+    .empty-cell {
+        color: #999;
+        font-size: 18px;
+    }
+
+    @@media print {
+
+        .btn {
+            display: none !important;
+        }
+
+        .timetable {
+            min-width: 100%;
+            font-size: 9px;
+        }
+
+            .timetable td {
+                height: 70px;
+            }
+
+        .lecture-card {
+            padding: 4px;
+        }
+
+            .lecture-card .subject {
+                font-size: 10px;
+            }
+
+            .lecture-card div {
+                font-size: 8px;
+            }
+    }
+
+</style>

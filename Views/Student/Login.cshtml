@@ -1,0 +1,132 @@
+﻿@{
+    ViewData["Title"] = "Student Login";
+}
+
+<div class="container-fluid teacher-login-bg">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="text-decoration-none fs-3">
+
+                ←
+
+            </a>
+
+
+            <div class="card shadow-lg rounded-4 border-0">
+
+                <div class="card-body p-4">
+
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="fw-bold text-primary">
+                            🎓 DNYANDEEP COLLEGE, KHED
+                        </h2>
+
+
+                        <h4 class="text-success">
+                            👨‍🎓 Student Login
+                        </h4>
+
+
+                        <span class="badge bg-success rounded-pill px-3 py-2">
+                            Student Portal
+                        </span>
+
+
+                        <p class="text-muted mt-2">
+                            Enter your class username and password to view your timetable
+                        </p>
+
+                    </div>
+
+
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger text-center">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+
+
+                    <form method="post" asp-action="Login">
+
+
+                        <div class="mb-3">
+
+                            <label class="fw-bold">
+                                Username
+                            </label>
+
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    👤
+                                </span>
+
+
+                                <input type="text"
+                                       name="username"
+                                       class="form-control"
+                                       placeholder="Enter class username" />
+
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div class="mb-3">
+
+                            <label class="fw-bold">
+                                Password
+                            </label>
+
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    🔒
+                                </span>
+
+
+                                <input type="password"
+                                       name="password"
+                                       class="form-control"
+                                       placeholder="Enter password" />
+
+                            </div>
+
+                        </div>
+
+
+
+                        <button type="submit"
+                                class="btn btn-success w-100 rounded-pill fw-bold mt-3">
+
+                            Login
+
+                        </button>
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

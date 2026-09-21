@@ -1,0 +1,207 @@
+@model AutomaticCollegeTimetableGenerator.Models.Student
+@{
+    ViewData["Title"] = "Create Class Login";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <a asp-action="Index"
+           class="btn btn-primary rounded-pill px-4">
+            ← Back
+        </a>
+
+        <h2 class="fw-bold text-primary">
+            🎓 Create Class Login
+        </h2>
+
+        <div></div>
+
+    </div>
+
+
+    <div class="card shadow-lg rounded-4 border-0">
+
+        <div class="card-body p-4">
+
+            <form asp-controller="ClassLogin"
+                  asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                <!-- USERNAME -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Username"
+                           class="form-label fw-bold">
+                        Username
+                    </label>
+
+                    <input asp-for="Username"
+                           class="form-control"
+                           placeholder="Enter username" />
+
+                    <span asp-validation-for="Username"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Password"
+                           class="form-label fw-bold">
+                        Password
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Enter password" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- CLASS DROPDOWN -->
+                <!-- SELECT CLASS -->
+                <!-- CLASS DROPDOWN -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Select Class
+                    </label>
+
+                    <select name="ClassName"
+                            id="ClassName"
+                            class="form-select">
+
+                        <option value="">-- Select Class --</option>
+
+                        <!-- BSc Computer Science -->
+                        <option value="FY BSc CS">FY BSc CS</option>
+                        <option value="SY BSc CS">SY BSc CS</option>
+                        <option value="TY BSc CS">TY BSc CS</option>
+
+                        <!-- BSc Information Technology -->
+                        <option value="FY BSc IT">FY BSc IT</option>
+                        <option value="SY BSc IT">SY BSc IT</option>
+                        <option value="TY BSc IT">TY BSc IT</option>
+
+                        <!-- BCom -->
+                        <option value="FY BCOM">FY BCOM</option>
+                        <option value="SY BCOM">SY BCOM</option>
+                        <option value="TY BCOM">TY BCOM</option>
+
+                        <!-- Hotel Management -->
+                        <option value="FY HM">FY HM</option>
+                        <option value="SY HM">SY HM</option>
+                        <option value="TY HM">TY HM</option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DEPARTMENT -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Department
+                    </label>
+
+                    <input type="text"
+                           name="Department"
+                           id="Department"
+                           class="form-control"
+                           readonly
+                           placeholder="Select class first" />
+
+                </div>
+
+
+                <!-- AUTO DEPARTMENT SCRIPT -->
+
+                <script>
+
+                                    document.getElementById("ClassName").addEventListener("change", function() {
+
+                                        var selectedClass = this.value;
+
+                                        var department = document.getElementById("Department");
+
+                                        if (selectedClass.includes("BSc CS")) {
+
+                                            department.value = "BSC. COMPUTER SCIENCE";
+
+                                        }
+                                        else if (selectedClass.includes("BSc IT")) {
+
+                                            department.value = "BSC. INFORMATION TECHNOLOGY";
+
+                                        }
+                                        else if (selectedClass.includes("BCOM")) {
+
+                                            department.value = "BCOM";
+
+                                        }
+                                        else if (selectedClass.includes("HM")) {
+
+                                            department.value = "HOTEL MANAGEMENT";
+
+                                        }
+                                        else {
+
+                                            department.value = "";
+
+                                        }
+
+                                    });
+
+                </script>
+
+                <!-- BUTTON -->
+
+                <div class="text-center mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success rounded-pill px-5">
+
+                        ✅ Create Account
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

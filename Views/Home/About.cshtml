@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-body p-5 text-center">
+
+            <img src="~/images/college-logo.png.jpeg"
+                 alt="College Logo"
+                 style="width:110px;height:110px;object-fit:contain;"
+                 class="mb-3" />
+
+            <h1 class="fw-bold text-primary">
+                DNYANDEEP COLLEGE OF SCIENCE AND COMMERCE
+            </h1>
+
+            <h3 class="fw-semibold mt-3">
+                Automatic College Timetable Generator
+            </h3>
+
+            <p class="text-muted mt-3">
+                A smart and automated timetable management system
+                designed to simplify college timetable creation and management.
+            </p>
+
+            <hr />
+
+            <div class="row mt-4">
+
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 p-3">
+                        <h2>⚡</h2>
+                        <h5 class="fw-bold">Automatic Generation</h5>
+                        <p class="text-muted">
+                            Generate college timetables quickly and efficiently.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 p-3">
+                        <h2>🛡️</h2>
+                        <h5 class="fw-bold">Clash Detection</h5>
+                        <p class="text-muted">
+                            Prevent teacher, classroom and timetable conflicts.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 p-3">
+                        <h2>🔄</h2>
+                        <h5 class="fw-bold">Substitution</h5>
+                        <p class="text-muted">
+                            Find available teachers when a faculty member is absent.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+
+                <h5 class="fw-bold">
+                    Developed as a College Project
+                </h5>
+
+                <p class="text-muted mb-0">
+                    ASP.NET Core MVC • C# • Entity Framework Core • SQL Server
+                </p>
+
+            </div>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-primary rounded-pill px-4 mt-4">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,144 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container mt-4">
+
+
+    <a asp-controller="Home"
+       asp-action="Dashboard"
+       class="btn btn-outline-primary mb-3">
+
+        ← Back to Dashboard
+
+    </a>
+
+
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🔔 Notifications
+        </h2>
+
+        <p class="text-muted">
+            View system notifications
+        </p>
+
+    </div>
+
+
+
+    <a asp-action="Create"
+       class="btn btn-success rounded-pill mb-3">
+
+        ➕ Create Notification
+
+    </a>
+
+
+
+    <table class="table table-bordered table-hover text-center">
+
+
+        <thead class="table-primary">
+
+            <tr>
+
+                <th>Title</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+
+
+        <tbody>
+
+
+            @if (Model.Any())
+            {
+
+                foreach (var item in Model)
+                {
+
+                    <tr>
+
+                        <td>
+                            @item.Title
+                        </td>
+
+
+                        <td>
+                            @item.Message
+                        </td>
+
+
+                        <td>
+                            @item.CreatedDate.ToShortDateString()
+                        </td>
+
+
+                        <td>
+
+                            <span class="badge bg-success">
+                                @item.Status
+                            </span>
+
+                        </td>
+
+                    </tr>
+                    <td>
+                        <form asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this notification?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.Id" />
+
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm">
+
+                                🗑️ Delete
+
+                            </button>
+
+                        </form>
+                    </td>
+
+                }
+
+            }
+            else
+            {
+
+                <tr>
+
+                    <td colspan="4"
+                        class="text-danger">
+
+                        No Notifications Found
+
+                    </td>
+
+                </tr>
+
+            }
+
+
+        </tbody>
+
+
+    </table>
+
+
+</div>

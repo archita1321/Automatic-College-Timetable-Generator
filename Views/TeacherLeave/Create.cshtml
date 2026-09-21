@@ -1,0 +1,252 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.TeacherLeave
+
+@{
+    ViewData["Title"] = "Apply Leave";
+}
+
+<div class="container mt-4">
+
+    <!-- BACK BUTTON -->
+    <a asp-controller="TeacherLeave"
+       asp-action="Index"
+       class="btn btn-outline-primary mb-3">
+
+        ← Back to Leave Management
+
+    </a>
+
+
+    <!-- PAGE HEADER -->
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            👨‍🏫 Teacher Leave Application
+        </h2>
+
+        <p class="text-muted">
+            Apply for teacher leave
+        </p>
+
+    </div>
+
+
+    <!-- LEAVE FORM -->
+    <div class="card shadow rounded-4">
+
+        <div class="card-body p-4">
+
+            <form asp-controller="TeacherLeave"
+                  asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- VALIDATION SUMMARY -->
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- TEACHER NAME -->
+                <!-- ============================= -->
+
+                <div class="mb-3">
+
+                    <label asp-for="TeacherName"
+                           class="form-label fw-bold">
+
+                        Teacher Name
+
+                    </label>
+
+                    <input asp-for="TeacherName"
+                           class="form-control"
+                           placeholder="Enter teacher name"
+                           required />
+
+                    <span asp-validation-for="TeacherName"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- LEAVE DATE -->
+                <!-- ============================= -->
+
+                <div class="mb-3">
+
+                    <label asp-for="LeaveDate"
+                           class="form-label fw-bold">
+
+                        Leave Date
+
+                    </label>
+
+                    <input asp-for="LeaveDate"
+                           type="date"
+                           class="form-control"
+                           required />
+
+                    <span asp-validation-for="LeaveDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- DAY DISPLAY -->
+                <!-- ============================= -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Day
+                    </label>
+
+                    <input id="Day"
+                           class="form-control"
+                           readonly
+                           placeholder="Day will appear automatically" />
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- REASON -->
+                <!-- ============================= -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Reason"
+                           class="form-label fw-bold">
+
+                        Reason
+
+                    </label>
+
+                    <textarea asp-for="Reason"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Enter reason for leave"
+                              required></textarea>
+
+                    <span asp-validation-for="Reason"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- STATUS -->
+                <!-- ============================= -->
+
+                <input type="hidden"
+                       asp-for="Status"
+                       value="Pending" />
+
+
+                <!-- ============================= -->
+                <!-- BUTTONS -->
+                <!-- ============================= -->
+
+                <div class="mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success rounded-pill px-4">
+
+                        📩 Submit Leave
+
+                    </button>
+
+                    <a asp-controller="TeacherLeave"
+                       asp-action="Index"
+                       class="btn btn-secondary rounded-pill px-4 ms-2">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- DAY AUTO CALCULATION -->
+<!-- ============================= -->
+
+<script>
+
+    const leaveDate =
+        document.getElementById("LeaveDate");
+
+    const day =
+        document.getElementById("Day");
+
+
+    function updateDay() {
+
+        if (!leaveDate.value) {
+
+            day.value = "";
+
+            return;
+        }
+
+
+        const selectedDate =
+            new Date(leaveDate.value + "T00:00:00");
+
+
+        const days = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        ];
+
+
+        day.value =
+            days[selectedDate.getDay()];
+    }
+
+
+    leaveDate.addEventListener(
+        "change",
+        updateDay
+    );
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        updateDay
+    );
+
+</script>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial"
+        );
+    }
+
+}

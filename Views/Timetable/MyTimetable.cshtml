@@ -1,0 +1,166 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.Timetable>
+
+@{
+    ViewData["Title"] = "My Timetable";
+}
+
+<div class="container mt-4">
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            🎓 DNANDEEP COLLEGE, KHED
+        </h2>
+
+        <h5 class="text-secondary">
+            Automatic College Timetable Generator
+        </h5>
+
+        <p class="text-muted">
+            📅 <span id="currentDate"></span>
+            &nbsp;&nbsp;
+            🕒 <span id="currentTime"></span>
+        </p>
+
+        <hr />
+
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <a asp-controller="Home"
+           asp-action="Dashboard"
+           class="btn btn-secondary">
+
+            ← Back to Dashboard
+
+        </a>
+
+        <div>
+
+            <h2 class="text-primary mb-0">
+                👨‍🏫 My Timetable
+            </h2>
+
+            <h5 class="text-success text-center">
+                Welcome, @Context.Session.GetString("TeacherName")
+            </h5>
+
+            @if (ViewBag.Teacher != null)
+            {
+                <div class="card shadow-sm border-0 rounded-4 mt-3">
+
+                    <div class="card-header bg-success text-white rounded-top-4">
+                        👨‍🏫 Teacher Profile
+                    </div>
+
+                    <div class="card-body">
+
+                        <p>
+                            <strong>Name:</strong>
+                            @ViewBag.Teacher.TeacherName
+                        </p>
+
+                        <p>
+                            <strong>Department:</strong>
+                            @ViewBag.Teacher.Department
+                        </p>
+
+                        <p>
+                            <strong>Subject:</strong>
+                            @ViewBag.Teacher.Subject
+                        </p>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+        <div>
+
+            <button onclick="window.print()"
+                    class="btn btn-success rounded-pill me-2">
+                🖨️ Print
+            </button>
+
+            <a asp-controller="Teacher"
+               asp-action="Logout"
+               class="btn btn-danger rounded-pill">
+                Logout
+            </a>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm rounded-4 mt-4">
+
+        <div class="card-header bg-primary text-white text-center">
+            📅 Weekly Teaching Schedule
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover text-center mb-0">
+
+                <thead class="table-primary text-center">
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Class</th>
+                <th>Room</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Day</td>
+                        <td>@item.TimeSlot</td>
+                        <td>@item.Subject</td>
+                        <td>@item.ClassName</td>
+                        <td>@item.Classroom</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                                <td colspan="5" class="text-center text-danger fw-bold">
+                                    📅 No timetable found.
+                                </td>
+                </tr>
+            }
+
+        </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+<script>
+
+    function updateDateTime() {
+
+        let now = new Date();
+
+        document.getElementById("currentDate").innerHTML =
+            now.toLocaleDateString();
+
+        document.getElementById("currentTime").innerHTML =
+            now.toLocaleTimeString();
+
+    }
+
+    setInterval(updateDateTime, 1000);
+
+    updateDateTime();
+
+</script>

@@ -1,0 +1,106 @@
+﻿@model IEnumerable<AutomaticCollegeTimetableGenerator.Models.TeacherLeave>
+
+@{
+    ViewData["Title"] = "Teacher Leave Management";
+}
+
+<div class="container mt-4">
+
+    <a asp-controller="Home"
+       asp-action="Dashboard"
+       class="btn btn-outline-primary mb-3">
+        ← Back to Dashboard
+    </a>
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold text-primary">
+            👨‍🏫 Teacher Leave Management
+        </h2>
+
+        <p class="text-muted">
+            Manage Teacher Leave Requests
+        </p>
+
+    </div>
+
+    <a asp-action="Create"
+       class="btn btn-success rounded-pill mb-3">
+        ➕ Apply Leave
+    </a>
+
+    <table class="table table-bordered table-hover text-center">
+
+        <thead class="table-primary">
+            <tr>
+                <th>Teacher Name</th>
+                <th>Leave Date</th>
+                <th>Day</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @if (Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @item.TeacherName
+                        </td>
+
+                        <td>
+                            @item.LeaveDate.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            @item.LeaveDate.ToString("dddd")
+                        </td>
+
+                        <td>
+                            @item.Reason
+                        </td>
+
+                        <td>
+                            <span class="badge bg-warning text-dark">
+                                @item.Status
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <a asp-controller="SubstituteTeacher"
+                               asp-action="Create"
+                               asp-route-teacherName="@item.TeacherName"
+                               asp-route-leaveDate="@item.LeaveDate.ToString("yyyy-MM-dd")"
+                               class="btn btn-primary btn-sm rounded-pill">
+
+                                🔄 Substitute
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6"
+                        class="text-danger">
+                        No Leave Requests Found
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

@@ -1,0 +1,189 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Timetable
+
+@{
+    ViewData["Title"] = "Edit Timetable";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-header bg-primary text-white">
+            <h2>Edit Timetable</h2>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="AcademicYear" />
+
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="Id" />
+
+
+                <div class="mb-3">
+                    <label>Class</label>
+
+                    <select asp-for="ClassName" class="form-control">
+
+                        <option value="">-- Select Class --</option>
+
+                        @foreach (var item in ViewBag.Classes)
+                        {
+                            <option value="@item.ClassName">
+                                @item.ClassName
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Department</label>
+
+                    <select asp-for="Department" class="form-control">
+
+                        <option value="">-- Select Department --</option>
+
+                        @foreach (var item in ViewBag.Departments)
+                        {
+                            <option value="@item.DepartmentName">
+                                @item.DepartmentName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Semester</label>
+
+                    <select asp-for="Semester" class="form-control">
+
+                        <option value="">-- Select Semester --</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Day</label>
+
+                    <select asp-for="Day" class="form-control">
+
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Time Slot</label>
+
+                    <select asp-for="TimeSlot" class="form-control">
+
+                        <option value="">-- Select Time Slot --</option>
+
+                        <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+                        <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                        <option value="11:15 AM - 12:15 PM">11:15 AM - 12:15 PM</option>
+                        <option value="12:15 PM - 01:15 PM">12:15 PM - 01:15 PM</option>
+                        <option value="02:00 PM - 03:00 PM (Lab)">02:00 PM - 03:00 PM (Lab)</option>
+                        <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>Subject</label>
+
+                    <select asp-for="Subject" class="form-control">
+
+                        <option value="">-- Select Subject --</option>
+
+                        @foreach (var item in ViewBag.Subjects)
+                        {
+                            <option value="@item.SubjectName">
+                                @item.SubjectName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Teacher</label>
+
+                    <select asp-for="Teacher" class="form-control">
+
+                        <option value="">-- Select Teacher --</option>
+
+                        @foreach (var item in ViewBag.Teachers)
+                        {
+                            <option value="@item.TeacherName">
+                                @item.TeacherName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="mb-3">
+                    <label>Classroom</label>
+
+                    <select asp-for="Classroom" class="form-control">
+
+                        <option value="">-- Select Room --</option>
+
+                        @foreach (var item in ViewBag.Classrooms)
+                        {
+                            <option value="@item.RoomNumber">
+                                @item.RoomNumber
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <button type="submit" class="btn btn-success">
+                    Save Changes
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

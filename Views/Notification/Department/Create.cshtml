@@ -1,0 +1,34 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Department
+
+@{
+    ViewData["Title"] = "Add Department";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary">Add New Department</h2>
+    <hr />
+
+    <form asp-action="Create">
+
+        <div class="mb-3">
+            <label>Department Name</label>
+            <input asp-for="DepartmentName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Description</label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Save Department
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            ← Back
+        </a>
+
+    </form>
+
+</div>

@@ -1,0 +1,455 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Timetable
+
+@{
+    ViewData["Title"] = "Generate Timetable";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="container py-5">
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Timetable Type</label>
+
+        <select class="form-control" id="TimetableType">
+            <option value="New">New Timetable</option>
+            <option value="Existing">Existing Timetable</option>
+        </select>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4 bg-light">
+
+        <div class="card-header bg-primary text-white rounded-top-4 py-3">
+            <h5 class="mb-0">
+                📝 Timetable Details
+            </h5>
+        </div>
+
+        <div class="card-body p-5">
+
+            <form asp-action="Create" method="post" id="timetableForm">
+
+                <div asp-validation-summary="All"
+                     class="text-danger mb-3"></div>
+
+                <!-- Class -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Class</label>
+
+                    <select class="form-control"
+                            id="Class"
+                            name="ClassName">
+
+                        <option value="">Select Class</option>
+
+                        @foreach (var item in ViewBag.Classes)
+                        {
+                            <option value="@item.ClassName">
+                                @item.ClassName
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Department -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Department</label>
+
+                    <select asp-for="Department"
+                            class="form-control"
+                            id="Department"
+                            onchange="loadData()">
+
+                        <option value="">Select Department</option>
+
+                        @foreach (var item in ViewBag.Departments)
+                        {
+                            <option value="@item.DepartmentName">
+                                @item.DepartmentName
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Semester -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Semester</label>
+
+                    <select asp-for="Semester"
+                            class="form-control"
+                            id="Semester"
+                            onchange="loadData()">
+
+                        <option value="">Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+
+                    </select>
+                </div>
+
+                <!-- Academic Year -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Academic Year</label>
+
+                    <select asp-for="AcademicYear"
+                            class="form-control">
+
+                        <option value="">-- Select Academic Year --</option>
+                        <option value="2026-27">2026-27</option>
+                        <option value="2027-28">2027-28</option>
+                        <option value="2028-29">2028-29</option>
+                        <option value="2029-30">2029-30</option>
+
+                    </select>
+                </div>
+
+                <!-- Day -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Day</label>
+
+                    <select asp-for="Day"
+                            class="form-control">
+
+                        <option value="">Select Day</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+
+                    </select>
+                </div>
+
+                <!-- Time Slot -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Time Slot</label>
+
+                    <select asp-for="TimeSlot"
+                            class="form-control">
+
+                        <option value="">Select Time Slot</option>
+                        <option value="09:00 AM - 10:00 AM">
+                            09:00 AM - 10:00 AM
+                        </option>
+
+                        <option value="10:00 AM - 11:00 AM">
+                            10:00 AM - 11:00 AM
+                        </option>
+
+                        <option value="11:15 AM - 12:15 PM">
+                            11:15 AM - 12:15 PM
+                        </option>
+
+                        <option value="12:15 PM - 01:15 PM">
+                            12:15 PM - 01:15 PM
+                        </option>
+
+                        <option value="02:00 PM - 03:00 PM (Lab)">
+                            02:00 PM - 03:00 PM (Lab)
+                        </option>
+
+                        <option value="03:00 PM - 04:00 PM">
+                            03:00 PM - 04:00 PM
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- Subject -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Subject</label>
+
+                    <select asp-for="Subject"
+                            class="form-control"
+                            id="Subject">
+
+                        <option value="">Select Subject</option>
+
+                    </select>
+                </div>
+
+                <!-- Teacher -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Teacher</label>
+
+                    <select asp-for="Teacher"
+                            class="form-control"
+                            id="Teacher">
+
+                        <option value="">Select Teacher</option>
+
+                        @foreach (var item in ViewBag.Teachers)
+                        {
+                            <option value="@item.TeacherName">
+                                @item.TeacherName
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Classroom -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Classroom</label>
+
+                    <select asp-for="Classroom"
+                            class="form-control"
+                            id="Classroom">
+
+                        <option value="">Select Classroom</option>
+
+                        @foreach (var item in ViewBag.Classrooms)
+                        {
+                            <option value="@item.RoomNumber">
+                                @item.RoomNumber
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-4 d-flex gap-3">
+
+                    <button type="submit"
+                            id="generateBtn"
+                            class="btn btn-success btn-lg rounded-pill px-5 shadow">
+
+                        <i class="bi bi-calendar-check-fill"></i>
+                        Save Timetable
+
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+
+                        <i class="bi bi-arrow-left"></i>
+                        Back
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    // =========================
+    // GENERATE BUTTON
+    // =========================
+
+    document.getElementById("timetableForm")
+        .addEventListener("submit", function() {
+
+            var button = document.getElementById("generateBtn");
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<i class="bi bi-hourglass-split"></i> Saving...';
+
+        });
+
+
+    // =========================
+    // CLASS CHANGE
+    // =========================
+
+    document.getElementById("Class")
+        .addEventListener("change", loadClassDetails);
+
+
+    function loadClassDetails() {
+
+        var className =
+            document.getElementById("Class").value;
+
+        if (!className) {
+            return;
+        }
+
+        fetch('/Timetable/GetClassDetails?className=' +
+            encodeURIComponent(className))
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                document.getElementById("Department").value =
+                    data.department;
+
+                document.getElementById("Semester").value =
+                    data.semester;
+
+                loadData();
+
+            });
+
+    }
+
+
+    // =========================
+    // LOAD SUBJECTS + CLASSROOMS
+    // =========================
+
+    function loadData() {
+
+        var department =
+            document.getElementById("Department").value;
+
+        var semester =
+            document.getElementById("Semester").value;
+
+
+        if (!department || !semester) {
+            return;
+        }
+
+
+        // SUBJECTS
+
+        fetch('/Timetable/GetSubjects?department=' +
+            encodeURIComponent(department) +
+            '&semester=' +
+            encodeURIComponent(semester))
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                var subjectDropdown =
+                    document.getElementById("Subject");
+
+                subjectDropdown.innerHTML =
+                    '<option value="">Select Subject</option>';
+
+                data.forEach(function(item) {
+
+                    subjectDropdown.innerHTML +=
+                        '<option value="' +
+                        item.subjectName +
+                        '">' +
+                        item.subjectName +
+                        '</option>';
+
+                });
+
+            });
+
+
+        // CLASSROOMS
+
+        fetch('/Timetable/GetClassrooms?department=' +
+            encodeURIComponent(department))
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                var classroomDropdown =
+                    document.getElementById("Classroom");
+
+                classroomDropdown.innerHTML =
+                    '<option value="">Select Classroom</option>';
+
+                data.forEach(function(item) {
+
+                    classroomDropdown.innerHTML +=
+                        '<option value="' +
+                        item.roomNumber +
+                        '">' +
+                        item.roomNumber +
+                        '</option>';
+
+                });
+
+            });
+
+    }
+
+
+    // =========================
+    // SUBJECT CHANGE → TEACHERS
+    // =========================
+
+    document.getElementById("Subject")
+        .addEventListener("change", loadTeachers);
+
+
+    function loadTeachers() {
+
+        var department =
+            document.getElementById("Department").value;
+
+        var subject =
+            document.getElementById("Subject").value;
+
+
+        if (!department || !subject) {
+            return;
+        }
+
+
+        fetch('/Timetable/GetTeachers?department=' +
+            encodeURIComponent(department) +
+            '&subject=' +
+            encodeURIComponent(subject))
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                var teacherDropdown =
+                    document.getElementById("Teacher");
+
+                teacherDropdown.innerHTML =
+                    '<option value="">Select Teacher</option>';
+
+                data.forEach(function(item) {
+
+                    teacherDropdown.innerHTML +=
+                        '<option value="' +
+                        item.teacherName +
+                        '">' +
+                        item.teacherName +
+                        '</option>';
+
+                });
+
+            });
+
+    }
+
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+
+    window.onload = function() {
+
+        var classDropdown =
+            document.getElementById("Class");
+
+        if (classDropdown &&
+            classDropdown.value !== "") {
+
+            loadClassDetails();
+
+        }
+
+    };
+
+</script>

@@ -1,0 +1,197 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.Class
+
+@{
+    ViewData["Title"] = "Add Class";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary">Add Class</h2>
+    <hr />
+
+    <form asp-action="Create" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <!-- CLASS NAME -->
+        <div class="mb-3">
+
+            <label asp-for="ClassName" class="form-label">
+                Class Name
+            </label>
+
+            <select asp-for="ClassName"
+                    id="className"
+                    class="form-select">
+
+                <option value="">
+                    -- Select Class --
+                </option>
+
+                <option value="FY BSc CS">FY BSc CS</option>
+                <option value="SY BSc CS">SY BSc CS</option>
+                <option value="TY BSc CS">TY BSc CS</option>
+
+                <option value="FY BSc IT">FY BSc IT</option>
+                <option value="SY BSc IT">SY BSc IT</option>
+                <option value="TY BSc IT">TY BSc IT</option>
+
+                <option value="FY BCOM">FY BCOM</option>
+                <option value="SY BCOM">SY BCOM</option>
+                <option value="TY BCOM">TY BCOM</option>
+
+                <option value="FY HM">FY HM</option>
+                <option value="SY HM">SY HM</option>
+                <option value="TY HM">TY HM</option>
+
+            </select>
+
+            <span asp-validation-for="ClassName"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <!-- DEPARTMENT -->
+        <div class="mb-3">
+
+            <label asp-for="Department"
+                   class="form-label">
+                Department
+            </label>
+
+            <select asp-for="Department"
+                    id="department"
+                    class="form-select">
+
+                <option value="">
+                    -- Select Department --
+                </option>
+
+                @foreach (var department in ViewBag.Departments)
+                {
+                    <option value="@department.DepartmentName">
+                        @department.DepartmentName
+                    </option>
+                }
+
+            </select>
+
+            <span asp-validation-for="Department"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <!-- SEMESTER -->
+        <div class="mb-3">
+
+            <label asp-for="Semester"
+                   class="form-label">
+                Semester
+            </label>
+
+            <select asp-for="Semester"
+                    id="semester"
+                    class="form-select">
+
+                <option value="">
+                    -- Select Semester --
+                </option>
+
+            </select>
+
+            <span asp-validation-for="Semester"
+                  class="text-danger"></span>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <button type="submit"
+                class="btn btn-success">
+            💾 Save
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary ms-2">
+            ← Back
+        </a>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    const className =
+        document.getElementById("className");
+
+    const department =
+        document.getElementById("department");
+
+    const semester =
+        document.getElementById("semester");
+
+
+    // ==========================================
+    // CLASS CHANGED
+    // ==========================================
+
+    className.addEventListener("change", function() {
+
+        const selectedClass =
+            className.value.toUpperCase();
+
+        // Clear semester
+        semester.innerHTML =
+            '<option value="">-- Select Semester --</option>';
+
+
+        // ==========================================
+        // FY → 1, 2
+        // SY → 3, 4
+        // TY → 5, 6
+        // ==========================================
+
+        let semesters = [];
+
+        if (selectedClass.startsWith("FY")) {
+
+            semesters = [1, 2];
+
+        }
+        else if (selectedClass.startsWith("SY")) {
+
+            semesters = [3, 4];
+
+        }
+        else if (selectedClass.startsWith("TY")) {
+
+            semesters = [5, 6];
+
+        }
+
+
+        // ==========================================
+        // ADD SEMESTERS
+        // ==========================================
+
+        semesters.forEach(function(sem) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = sem;
+
+            option.textContent =
+                "Semester " + sem;
+
+            semester.appendChild(option);
+
+        });
+
+    });
+
+</script>

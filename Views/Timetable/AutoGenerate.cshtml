@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "Generate Timetable";
+    var classes = ViewBag.Classes as List<AutomaticCollegeTimetableGenerator.Models.Class>;
+}
+
+<div class="container mt-5">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+
+        <div style="font-size:55px;">🤖</div>
+
+        <h2 class="fw-bold text-primary">
+            Generate Timetable
+        </h2>
+
+        <p class="text-muted">
+            Select a class and let the system create its complete
+            weekly timetable automatically.
+        </p>
+
+    </div>
+
+    <!-- SUCCESS -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center shadow-sm">
+            ✅ @TempData["Success"]
+        </div>
+    }
+
+    <!-- ERROR -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center shadow-sm">
+            ❌ @TempData["Error"]
+        </div>
+    }
+
+    <!-- MAIN CARD -->
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-header bg-primary text-white text-center p-4 rounded-top-4">
+
+            <h4 class="fw-bold mb-1">
+                📅 Create Class Timetable
+            </h4>
+
+            <small>
+                Choose a class to automatically generate its timetable.
+            </small>
+
+        </div>
+
+        <div class="card-body p-5">
+
+            <!-- GENERATE FORM -->
+            <form asp-controller="Timetable"
+                  asp-action="Generate"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- CLASS SELECTION -->
+                <div class="row justify-content-center">
+
+                    <div class="col-md-7">
+
+                        <label class="form-label fw-bold">
+                            🎓 Select Class
+                        </label>
+
+                        <select name="classId"
+                                class="form-select form-select-lg"
+                                required>
+
+                            <option value="">
+                                -- Select Class --
+                            </option>
+
+                            @if (classes != null)
+                            {
+                                foreach (var item in classes)
+                                {
+                                    <option value="@item.Id">
+                                        @item.ClassName -
+                                        @item.Department -
+                                        Semester @item.Semester
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                        <div class="form-text">
+                            Only the selected class will be generated.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SYSTEM FEATURES -->
+                <div class="row g-3 mt-4">
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">📚</div>
+                            <strong>Subjects</strong>
+                            <p class="text-muted small mb-0">
+                                Automatically loaded
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">👨‍🏫</div>
+                            <strong>Teachers</strong>
+                            <p class="text-muted small mb-0">
+                                Automatically assigned
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">🏫</div>
+                            <strong>Rooms & Labs</strong>
+                            <p class="text-muted small mb-0">
+                                Automatically selected
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">📖</div>
+                            <strong>Theory</strong>
+                            <p class="text-muted small mb-0">
+                                1-hour lectures
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">🔬</div>
+                            <strong>Practical</strong>
+                            <p class="text-muted small mb-0">
+                                2-hour practical blocks
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center h-100">
+                            <div style="font-size:30px;">🧠</div>
+                            <strong>Smart Scheduling</strong>
+                            <p class="text-muted small mb-0">
+                                Clash-free timetable
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMATION -->
+                <div class="alert alert-info text-center mt-4">
+
+                    <strong>ℹ️ How it works</strong>
+
+                    <br />
+
+                    Select a class and click
+                    <strong>Generate Timetable</strong>.
+
+                    <br />
+
+                    The system will generate the timetable
+                    <strong>only for that selected class</strong>.
+
+                </div>
+
+
+                <!-- GENERATE BUTTON -->
+                <div class="text-center mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow">
+
+                        🤖 Generate Timetable
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- DELETE ALL -->
+            <div class="card border-danger mt-5">
+
+                <div class="card-body text-center">
+
+                    <h5 class="fw-bold text-danger">
+                        🗑️ Timetable Management
+                    </h5>
+
+                    <p class="text-muted">
+                        Quickly remove all currently generated timetable entries.
+                    </p>
+
+                    <form asp-controller="Timetable"
+                          asp-action="ClearTimetable"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to delete ALL timetable entries?');">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="btn btn-danger rounded-pill px-4">
+
+                            🗑️ Delete All Timetable
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- VIEW TIMETABLE -->
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+
+        <div class="card-body text-center p-4">
+
+            <h5 class="fw-bold">
+                📋 Already Generated?
+            </h5>
+
+            <p class="text-muted">
+                View the generated timetable.
+            </p>
+
+            <a asp-controller="Timetable"
+               asp-action="ViewTimetable"
+               class="btn btn-primary rounded-pill px-4">
+
+                👁️ View Timetable
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

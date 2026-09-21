@@ -1,0 +1,240 @@
+﻿@model List<AutomaticCollegeTimetableGenerator.Models.Teacher>
+
+@{
+    ViewData["Title"] = "Manage Teachers";
+
+    var teacherSubjects =
+    ViewBag.TeacherSubjects
+    as List<AutomaticCollegeTimetableGenerator.Models.Subject>
+    ?? new List<AutomaticCollegeTimetableGenerator.Models.Subject>();
+}
+
+<div class="container mt-3 mb-4">
+
+    <!-- HEADER -->
+    <div class="position-relative text-center mb-4">
+
+        <h3 class="fw-bold text-primary mb-1">
+            👩‍🏫 Manage Teachers
+        </h3>
+
+        <small class="text-muted">
+            Manage teacher information and teaching assignments
+        </small>
+
+        <!-- BUTTONS -->
+        <div class="position-absolute top-0 end-0 d-flex gap-2">
+
+            <a asp-controller="Teacher"
+               asp-action="Create"
+               class="btn btn-success btn-sm rounded-pill px-3">
+                + Add Teacher
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Dashboard"
+               class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                ← Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success py-2 small">
+            ✅ @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <!-- TEACHERS -->
+    @foreach (var teacher in Model)
+    {
+        var teacherAssignments =
+    teacherSubjects
+    .Where(s =>
+        s.Teacher != null &&
+        s.Teacher.Trim().Equals(
+            teacher.TeacherName?.Trim(),
+            StringComparison.OrdinalIgnoreCase))
+    .ToList();
+
+        <!-- TEACHER CARD -->
+        <div class="card border-0 shadow-sm rounded-3 mb-3 mx-auto"
+             style="max-width: 1000px;">
+
+            <!-- HEADER -->
+            <div class="card-header bg-primary text-white py-2 px-3">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <span class="fw-bold">
+                            👩‍🏫 @teacher.TeacherName
+                        </span>
+
+                        <span class="badge bg-light text-primary ms-2">
+                            @teacher.Department
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex gap-1">
+
+                        <a asp-action="Edit"
+                           asp-route-id="@teacher.Id"
+                           class="btn btn-warning btn-sm py-1 px-2">
+                            ✏️ Edit
+                        </a>
+
+                        <a asp-controller="Subject"
+                           asp-action="Create"
+                           asp-route-teacherId="@teacher.Id"
+                           class="btn btn-success btn-sm py-1 px-2">
+                            ➕ Add Subject
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@teacher.Id"
+                           class="btn btn-danger btn-sm py-1 px-2"
+                           onclick="return confirm('Delete this teacher?');">
+                            🗑️ Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TEACHER DETAILS -->
+            <div class="card-body py-2 px-3">
+
+                <div class="row g-2 small mb-3">
+
+                    <div class="col-md-3">
+                        <strong>Email:</strong><br />
+                        <span class="text-muted">
+                            @teacher.Email
+                        </span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Phone:</strong><br />
+                        <span class="text-muted">
+                            @teacher.Phone
+                        </span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Username:</strong><br />
+                        <span class="text-muted">
+                            @teacher.Username
+                        </span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Password:</strong><br />
+                        <span class="text-muted">
+                            @teacher.Password
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- SUBJECT HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+
+                    <strong class="text-primary">
+                        📚 Teaching Subjects
+                    </strong>
+
+                    <span class="badge bg-secondary">
+                        @teacherAssignments.Count
+                    </span>
+
+                </div>
+
+
+                <!-- SUBJECT TABLE -->
+                @if (teacherAssignments.Any())
+                {
+                    <div class="table-responsive">
+
+                        <table class="table table-sm table-bordered align-middle mb-0"
+                               style="font-size: 13px;">
+
+                            <thead class="table-light">
+
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Class</th>
+                                    <th>Semester</th>
+                                    <th>Lectures</th>
+                                    <th>Duration</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var assignment in teacherAssignments)
+                                {
+                                    <tr>
+
+                                        <td class="fw-semibold">
+                                            @assignment.SubjectName
+                                        </td>
+
+                                        <td>
+                                            @assignment.ClassName
+                                        </td>
+
+                                        <td>
+                                            Sem @assignment.Semester
+                                        </td>
+
+                                        <td>
+                                            @assignment.LectureCount
+                                        </td>
+
+                                        <td>
+                                            @assignment.Duration
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted small py-2">
+                        No teaching subjects added yet.
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>
+<style>
+    .table td,
+    .table th {
+        padding: 6px 8px;
+        white-space: nowrap;
+    }
+</style>

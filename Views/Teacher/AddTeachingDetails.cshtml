@@ -1,0 +1,653 @@
+﻿@model AutomaticCollegeTimetableGenerator.Models.TeacherTeachingDetailsViewModel
+
+@{
+    ViewData["Title"] = "Teaching Details";
+}
+
+<div class="container mt-4 mb-5">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                👩‍🏫 @Model.TeacherName
+            </h2>
+
+            <p class="text-muted mb-0">
+                Add all classes, semesters and subjects taught by this teacher.
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary rounded-pill px-4">
+            ← Back
+        </a>
+
+    </div>
+
+
+    <!-- MAIN CARD -->
+    <div class="card border-0 shadow-lg rounded-4">
+
+        <div class="card-body p-4 p-md-5">
+
+            <form asp-action="AddTeachingDetails"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="TeacherId" />
+
+                <input type="hidden"
+                       asp-for="TeacherName" />
+
+
+                <!-- SELECT CLASS + SEMESTER -->
+
+                <div class="card bg-light border-0 rounded-4 p-4 mb-4">
+
+                    <h5 class="fw-bold text-primary mb-3">
+                        📚 Select Teaching Class
+                    </h5>
+
+                    <div class="row g-3">
+
+                        <!-- CLASS -->
+
+                        <div class="col-md-5">
+
+                            <label class="form-label fw-bold">
+                                Class
+                            </label>
+
+                            <select id="classSelect"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Class --
+                                </option>
+
+                                @foreach (var item in ViewBag.Classes)
+                                {
+                                    <option value="@item.ClassName">
+                                        @item.ClassName
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- SEMESTER -->
+
+                        <div class="col-md-4">
+
+                            <label class="form-label fw-bold">
+                                Semester
+                            </label>
+
+                            <select id="semesterSelect"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Semester --
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- LOAD -->
+
+                        <div class="col-md-3 d-flex align-items-end">
+
+                            <button type="button"
+                                    id="loadSubjects"
+                                    class="btn btn-success w-100 rounded-pill">
+
+                                📚 Load Subjects
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SELECTED SUBJECTS -->
+
+                <h5 class="fw-bold text-primary mb-3">
+                    📖 Selected Teaching Subjects
+                </h5>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead class="table-dark">
+
+                            <tr>
+
+                                <th>Class</th>
+
+                                <th>Semester</th>
+
+                                <th>Subject</th>
+
+                                <th style="width:170px;">
+                                    Subject Type
+                                </th>
+
+                                <th style="width:150px;">
+                                    Lectures / Week
+                                </th>
+
+                                <th style="width:150px;">
+                                    Duration
+                                </th>
+
+                                <th style="width:90px;">
+                                    Remove
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="assignmentTable">
+
+                            <tr id="emptyRow">
+
+                                <td colspan="7"
+                                    class="text-center text-muted py-4">
+
+                                    No subjects added yet.
+                                    Select a class and semester above.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- SAVE -->
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary rounded-pill px-4">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary rounded-pill px-5">
+
+                        💾 Save All Teaching Details
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =========================================================
+    // DATABASE DATA
+    // =========================================================
+
+    const classes = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(ViewBag.Classes)
+                );
+
+    const subjects = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(ViewBag.Subjects)
+                );
+
+
+    let assignmentIndex = 0;
+
+
+    // =========================================================
+    // CLASS CHANGE
+    // =========================================================
+
+    document.getElementById("classSelect")
+        .addEventListener("change", function() {
+
+            const selectedClass = this.value;
+
+            const semesterSelect =
+                document.getElementById("semesterSelect");
+
+
+            // Clear semester dropdown
+
+            semesterSelect.innerHTML =
+                '<option value="">-- Select Semester --</option>';
+
+
+            if (!selectedClass) {
+                return;
+            }
+
+
+            // Find semesters belonging to selected class
+
+            const semesters = classes
+                .filter(function(item) {
+
+                    return item.ClassName === selectedClass;
+
+                })
+                .map(function(item) {
+
+                    return Number(item.Semester);
+
+                })
+                .filter(function(value, index, array) {
+
+                    return array.indexOf(value) === index;
+
+                })
+                .sort(function(a, b) {
+
+                    return a - b;
+
+                });
+
+
+            // Add semesters
+
+            semesters.forEach(function(semester) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = semester;
+
+                option.textContent =
+                    "Semester " + semester;
+
+                semesterSelect.appendChild(option);
+
+            });
+
+        });
+
+
+    // =========================================================
+    // LOAD SUBJECTS
+    // =========================================================
+
+    document.getElementById("loadSubjects")
+        .addEventListener("click", function() {
+
+            const className =
+                document.getElementById("classSelect").value;
+
+            const semester =
+                document.getElementById("semesterSelect").value;
+
+
+            if (!className) {
+
+                alert("Please select a class.");
+
+                return;
+
+            }
+
+
+            if (!semester) {
+
+                alert("Please select a semester.");
+
+                return;
+
+            }
+
+
+            // Find subjects for selected class + semester
+
+            const matchingSubjects = subjects.filter(function(subject) {
+
+                return subject.ClassName === className &&
+                    Number(subject.Semester) === Number(semester);
+
+            });
+
+
+            if (matchingSubjects.length === 0) {
+
+                alert(
+                    "No subjects found for this class and semester."
+                );
+
+                return;
+
+            }
+
+
+            const table =
+                document.getElementById("assignmentTable");
+
+
+            // Remove empty message
+
+            const emptyRow =
+                document.getElementById("emptyRow");
+
+            if (emptyRow) {
+                emptyRow.remove();
+            }
+
+
+            // =================================================
+            // ADD EACH SUBJECT
+            // =================================================
+
+            matchingSubjects.forEach(function(subject) {
+
+                // Check duplicate
+
+                const existingRows =
+                    table.querySelectorAll("tr");
+
+                let alreadyExists = false;
+
+
+                existingRows.forEach(function(row) {
+
+                    const subjectInput =
+                        row.querySelector(
+                            'input[data-field="subject"]'
+                        );
+
+                    const classInput =
+                        row.querySelector(
+                            'input[data-field="class"]'
+                        );
+
+                    const semesterInput =
+                        row.querySelector(
+                            'input[data-field="semester"]'
+                        );
+
+
+                    if (
+                        subjectInput &&
+                        classInput &&
+                        semesterInput &&
+                        subjectInput.value === subject.SubjectName &&
+                        classInput.value === subject.ClassName &&
+                        Number(semesterInput.value) === Number(subject.Semester)
+                    ) {
+
+                        alreadyExists = true;
+
+                    }
+
+                });
+
+
+                if (alreadyExists) {
+
+                    return;
+
+                }
+
+
+                // Create row
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                        <!-- CLASS -->
+
+                        <td>
+
+                            <input type="hidden"
+                                   data-field="class"
+                                   name="Assignments[${assignmentIndex}].ClassName"
+                                   value="${subject.ClassName}" />
+
+                            ${subject.ClassName}
+
+                        </td>
+
+
+                        <!-- SEMESTER -->
+
+                        <td>
+
+                            <input type="hidden"
+                                   data-field="semester"
+                                   name="Assignments[${assignmentIndex}].Semester"
+                                   value="${subject.Semester}" />
+
+                            Semester ${subject.Semester}
+
+                        </td>
+
+
+                        <!-- SUBJECT -->
+
+                        <td>
+
+                            <input type="hidden"
+                                   data-field="subject"
+                                   name="Assignments[${assignmentIndex}].Subject"
+                                   value="${subject.SubjectName}" />
+
+                            <strong>
+                                ${subject.SubjectName}
+                            </strong>
+
+                        </td>
+
+
+                        <!-- SUBJECT TYPE -->
+
+                        <td>
+
+                            <select
+                                name="Assignments[${assignmentIndex}].SubjectType"
+                                class="form-select"
+                                required>
+
+                                <option value="Theory">
+                                    Theory
+                                </option>
+
+                                <option value="Practical">
+                                    Practical
+                                </option>
+
+                                <option value="Project">
+                                    Project
+                                </option>
+
+                                <option value="Theory + Practical">
+                                    Theory + Practical
+                                </option>
+
+                            </select>
+
+                        </td>
+
+
+                        <!-- LECTURES -->
+
+                        <td>
+
+                            <input type="number"
+                                   name="Assignments[${assignmentIndex}].LectureCount"
+                                   value="2"
+                                   min="1"
+                                   class="form-control"
+                                   required />
+
+                        </td>
+
+
+                        <!-- DURATION -->
+
+                        <td>
+
+                            <select
+                                name="Assignments[${assignmentIndex}].Duration"
+                                class="form-select"
+                                required>
+
+                                <option value="1 Hour">
+                                    1 Hour
+                                </option>
+
+                                <option value="2 Hours">
+                                    2 Hours
+                                </option>
+
+                            </select>
+
+                        </td>
+
+
+                        <!-- REMOVE -->
+
+                        <td class="text-center">
+
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm remove-row">
+
+                                🗑️
+
+                            </button>
+
+                        </td>
+
+                    `;
+
+
+                table.appendChild(row);
+
+                assignmentIndex++;
+
+            });
+
+        });
+
+
+    // =========================================================
+    // REMOVE SUBJECT
+    // =========================================================
+
+    document.addEventListener("click", function(event) {
+
+        const button =
+            event.target.closest(".remove-row");
+
+
+        if (!button) {
+            return;
+        }
+
+
+        button.closest("tr").remove();
+
+
+        reindexAssignments();
+
+
+        // Show empty message if no rows
+
+        const table =
+            document.getElementById("assignmentTable");
+
+
+        if (table.querySelectorAll("tr").length === 0) {
+
+            table.innerHTML = `
+
+                    <tr id="emptyRow">
+
+                        <td colspan="7"
+                            class="text-center text-muted py-4">
+
+                            No subjects added yet.
+                            Select a class and semester above.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+        }
+
+    });
+
+
+    // =========================================================
+    // RE-INDEX ASSIGNMENTS
+    // =========================================================
+
+    function reindexAssignments() {
+
+        const rows =
+            document.querySelectorAll(
+                "#assignmentTable tr:not(#emptyRow)"
+            );
+
+
+        rows.forEach(function(row, index) {
+
+            const inputs =
+                row.querySelectorAll("input, select");
+
+
+            inputs.forEach(function(input) {
+
+                if (input.name) {
+
+                    input.name =
+                        input.name.replace(
+                            /Assignments\[\d+\]/,
+                            `Assignments[${index}]`
+                        );
+
+                }
+
+            });
+
+        });
+
+
+        assignmentIndex = rows.length;
+
+    }
+
+</script>
